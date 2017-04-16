@@ -1,29 +1,16 @@
 
 ###### START WITH NODE 6.1 (compatible with new AWS lambda... because yeah why not)
-FROM node:boron
+FROM mhart/alpine-node:6.10.2
 MAINTAINER James Villarrubia "james.villarrubia@gmail.com"
 
 ###### THE STANDARD STUFF INSTALL
-RUN apt-get update
-RUN apt-get -y install \
-	build-essential \
-	wget \
-	unzip \
-	git 
+#RUN apt-get update
+#RUN apt-get -y install \
+	# build-essential \
+#	wget \
+	#unzip \
+#	git 
 
-
-
-
-
-###### THE JAVA INSTALL
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-		bzip2 \
-		unzip \
-		xz-utils \
-	&& rm -rf /var/lib/apt/lists/*
-
-RUN echo 'deb http://deb.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list
 
 
 
@@ -39,28 +26,22 @@ RUN { \
 		echo 'dirname "$(dirname "$(readlink -f "$(which javac || which java)")")"'; \
 	} > /usr/local/bin/docker-java-home \
 	&& chmod +x /usr/local/bin/docker-java-home
+ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
+ENV PATH $PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
 
-ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
-
-ENV JAVA_VERSION 8u121
-ENV JAVA_DEBIAN_VERSION 8u121-b13-1~bpo8+1
-
-# see https://bugs.debian.org/775775
-# and https://github.com/docker-library/java/issues/19#issuecomment-70546872
-ENV CA_CERTIFICATES_JAVA_VERSION 20161107~bpo8+1
+ENV JAVA_VERSION 8u111
+ENV JAVA_ALPINE_VERSION 8.111.14-r0
 
 RUN set -x \
-	&& apt-get update \
-	&& apt-get install -y \
-		openjdk-8-jdk="$JAVA_DEBIAN_VERSION" \
-		ca-certificates-java="$CA_CERTIFICATES_JAVA_VERSION" \
-	&& rm -rf /var/lib/apt/lists/* \
+	&& apk add --no-cache \
+		openjdk8="$JAVA_ALPINE_VERSION" \
 	&& [ "$JAVA_HOME" = "$(docker-java-home)" ]
 
-# see CA_CERTIFICATES_JAVA_VERSION notes above
-RUN /var/lib/dpkg/info/ca-certificates-java.postinst configure
 
 
+RUN apk update \
+	&& apk add ca-certificates wget \
+	&& update-ca-certificates
 
 ###### NOW THE HEART OF THE MATTER
 
