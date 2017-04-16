@@ -1,0 +1,18 @@
+{
+  "name": "docker.ner.node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "minimist": "^1.2.0",
+    "ner-node": "0.0.7"
+  }
+}
