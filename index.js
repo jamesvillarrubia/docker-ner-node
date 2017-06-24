@@ -30,7 +30,7 @@ app.post('/', function(req, res) {
   //console.log('NER Request received')
   var output = []
   var startTime = process.uptime()
-  //console.log(req.body)
+  console.log(req)
   res.send(NER.getEntities(req.body.data, ""))
   //console.log(process.uptime() - startTime, "ms for 23 lines")
 })
