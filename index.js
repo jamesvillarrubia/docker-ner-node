@@ -27,7 +27,6 @@ app.get('/restart', function(req, res) {
 
 app.get('/',function(req, res) {
   //console.log('NER Request received')
-  res.send('You need to POST some json as {data:"XXXX"} or this will not work')
   //console.log(process.uptime() - startTime, "ms for 23 lines")
 
   if (req.query.testcrash == 'true') {
@@ -35,6 +34,8 @@ app.get('/',function(req, res) {
         undefined.crashMe();
     }, 100);
   }//console.log('NER Request received')
+
+  res.send('You need to POST some json as {data:"XXXX"} or this will not work')
 
 })
 
