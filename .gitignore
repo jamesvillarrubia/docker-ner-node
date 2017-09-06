@@ -1,0 +1,8 @@
+node_modules
+npm-debug.log
+stanford-ner-2015-04-20/
+ner.zip
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
