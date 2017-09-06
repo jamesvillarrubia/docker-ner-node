@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node test.js",
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "deploy": "sh ./deploy/runner.sh"
   },
   "author": "",
   "license": "ISC",
