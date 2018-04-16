@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "config":{
-    "module_name": "ner-node"
+    "aws_profile": "mtc-ner-gitlab",
+    "module_name": "ner.mt.clevere.st",
+    "aws_bucket_root": "ner.mt.clevere.st"
   },
   "scripts": {
     "test": "node test.js",
