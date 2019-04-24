@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "config":{
+  "config": {
     "aws_profile": "mtc-ner-gitlab",
     "module_name": "ner.mt.clevere.st",
     "aws_bucket_root": "ner.mt.clevere.st"
@@ -13,7 +13,7 @@
     "start": "node index.js",
     "deploy": "sh ./deploy/runner.sh",
     "docker:build": "sh ./deploy/dockerize.sh $npm_package_config_module_name $npm_package_config_aws_profile $npm_package_config_aws_bucket_root",
-    "docker:push":"sh ./deploy/docker_push.sh",
+    "docker:push": "sh ./deploy/docker_push.sh",
     "dockerize": "sh ./deploy/dockerize.sh $npm_package_config_module_name $npm_package_config_aws_profile $npm_package_config_aws_bucket_root",
     "deploy:local": "npm run dockerize local",
     "deploy:develop": "npm run dockerize develop",
@@ -24,7 +24,6 @@
     "git:qa": "git checkout qa; git merge develop --no-edit; git commit --allow-empty -m 'semver:patch'; git push origin qa; git checkout develop;",
     "git:staging": "git checkout staging; git merge qa; git push origin staging; git checkout develop;",
     "git:production": "git checkout master; git merge staging; git push origin master; git checkout develop;",
-
     "eb-start": "node ./dist/index.js",
     "eb-deploy:local": "NODE_ENV=development; git add . ; git commit -m \"eb-deploy:local\" --allow-empty; eb local run --envvars AWS_NODE_ENV=production",
     "eb-deploy:develop": "NODE_ENV=development; git add . ; git commit -m \"eb-deploy:develop\" --allow-empty; eb deploy develop-ner-mt-clevere-st --profile $npm_package_config_aws_profile --timeout 15",

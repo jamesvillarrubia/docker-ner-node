@@ -1,57 +1,48 @@
 
 ###### START WITH NODE 6.1 (compatible with new AWS lambda... because yeah why not)
-FROM mhart/alpine-node:6.10.2
+FROM mhart/alpine-node:8
 MAINTAINER James Villarrubia "james.villarrubia@gmail.com"
 
-###### THE STANDARD STUFF INSTALL
-#RUN apt-get update
-#RUN apt-get -y install \
-	# build-essential \
-#	wget \
-	#unzip \
-#	git 
+ENV JAVA_HOME /opt/openjdk-13
+ENV PATH $JAVA_HOME/bin:$PATH
 
-
-
-
-# Default to UTF-8 file.encoding
-ENV LANG C.UTF-8
-
-# add a simple script that can auto-detect the appropriate JAVA_HOME value
-# based on whether the JDK or only the JRE is installed
-RUN { \
-		echo '#!/bin/sh'; \
-		echo 'set -e'; \
-		echo; \
-		echo 'dirname "$(dirname "$(readlink -f "$(which javac || which java)")")"'; \
-	} > /usr/local/bin/docker-java-home \
-	&& chmod +x /usr/local/bin/docker-java-home
-ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
-ENV PATH $PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
-
-ENV JAVA_VERSION 8u111
-ENV JAVA_ALPINE_VERSION 8.111.14-r0
-
-RUN set -x \
-	&& apk add --no-cache \
-		openjdk8="$JAVA_ALPINE_VERSION" \
-	&& [ "$JAVA_HOME" = "$(docker-java-home)" ]
-
-
+# https://jdk.java.net/
+ENV JAVA_VERSION 13-ea+16
+ENV JAVA_URL https://download.java.net/java/early_access/alpine/16/binaries/openjdk-13-ea+16_linux-x64-musl_bin.tar.gz
+ENV JAVA_SHA256 1e3bcc2efccf17b1c86053dece5c9f5543d9c0ec1809a2586e89d3fe0e20e37d
+# "For Alpine Linux, builds are produced on a reduced schedule and may not be in sync with the other platforms."
 
 RUN apk update \
 	&& apk add ca-certificates wget \
 	&& update-ca-certificates
 
-###### NOW THE HEART OF THE MATTER
+RUN set -eux; \
+	\
+	wget -O /openjdk.tgz "$JAVA_URL"; \
+	echo "$JAVA_SHA256 */openjdk.tgz" | sha256sum -c -; \
+	mkdir -p "$JAVA_HOME"; \
+	tar --extract --file /openjdk.tgz --directory "$JAVA_HOME" --strip-components 1; \
+	rm /openjdk.tgz; \
+	\
+# https://github.com/docker-library/openjdk/issues/212#issuecomment-420979840
+# https://openjdk.java.net/jeps/341
+	java -Xshare:dump; \
+	\
+# basic smoke test
+	java --version; \
+	javac --version
 
-# Create app directory
+
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 # Download and unzip the stanford library
-RUN wget -O ner.zip http://nlp.stanford.edu/software/stanford-ner-2015-04-20.zip
+# RUN wget -O ner.zip http://nlp.stanford.edu/software/stanford-ner-2015-04-20.zip
+RUN wget -O ner.zip https://nlp.stanford.edu/software/stanford-ner-2018-10-16.zip
 RUN unzip ner.zip
+
+
+# ENTRYPOINT [ "/bin/sh" ] 
 
 # Install app dependencies
 COPY package.json /usr/src/app/
@@ -63,5 +54,3 @@ COPY ./index.js /usr/src/app
 EXPOSE 8080
 
 CMD [ "npm", "start" ]
-
-

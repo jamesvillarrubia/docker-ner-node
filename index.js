@@ -11,7 +11,7 @@ app.use(function(req, res, next) {
   next();
 });
 
-var NER = socketNER(1234, 'classifiers/english.muc.7class.distsim.crf.ser.gz', "./stanford-ner-2015-04-20/")
+var NER = socketNER(1234, 'classifiers/english.muc.7class.distsim.crf.ser.gz', "./stanford-ner-2018-10-16/")
 NER.init()
 console.log('NER intialized')
 
