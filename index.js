@@ -66,7 +66,7 @@ app.get('/close', function(req, res) {
 })
 
 
-var port = 8080
+var port = 4321
 app.listen(port, function() {
   console.log('Micro-NER listening on port ' + port + '!');
 });
